@@ -1,0 +1,78 @@
+//Given a singly linked list, determine if it is a palindrome.
+
+//Follow up:
+//Could you do it in O(n) time and O(1) space?
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ // dummy->1->2->1->NULL;
+ // dummy->1->2->2->1->NULL;
+ // dummy->1-->2-->3-->4-->4-->3-->2-->1-->NULL
+ // find the middle point, reverse the first part of list
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        
+        if(head == NULL || head->next == NULL) return true;
+        
+        ListNode dummy(0);
+        dummy.next = head;
+        
+        ListNode* fast = &dummy;
+        ListNode* slow = &dummy;
+        while(fast->next != NULL && fast->next->next != NULL)
+        {
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+        //if it is even
+        //header of the second half is slow->next
+        ListNode secondHalf(0);
+        
+        if(fast->next == NULL)
+        {
+            secondHalf.next = slow->next;    
+        }
+        else if(fast->next->next == NULL)
+        {
+            //header of the second half is slow->next->next
+            secondHalf.next = slow->next->next;
+        }
+        //Note: need to assign slow->next =NULL to make sure second half and first half are not join together
+        slow->next = NULL;
+        //now reverse the second half
+        ListNode* ins = &secondHalf;
+        ListNode* cur = secondHalf.next;
+        ListNode* move = cur->next;
+        while(cur->next != NULL)
+        {
+            move = cur->next;
+            cur->next = move->next;
+            move->next = ins->next;
+            ins->next = move;
+        }
+        
+        //now compare the first half and second half
+        ListNode* firstHalf = dummy.next;
+        ListNode* second = secondHalf.next;
+        while(firstHalf != NULL && second != NULL)
+        {
+            if(firstHalf->val != second->val)
+                return false;
+                
+            firstHalf = firstHalf->next;
+            second = second->next;
+        }
+        if(firstHalf != NULL) return false;
+        if(second != NULL) return false;
+        
+        return true;
+    }
+};
+
