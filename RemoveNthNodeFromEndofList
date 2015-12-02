@@ -1,0 +1,54 @@
+//Given a linked list, remove the nth node from the end of list and return its head.
+
+//For example,
+
+//   Given linked list: 1->2->3->4->5, and n = 2.
+
+//   After removing the second node from the end, the linked list becomes 1->2->3->5.
+//Note:
+//Given n will always be valid.
+//Try to do this in one pass.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ 
+ //dummy->1->2->3->4->5  n=2
+ //need two pointers, fast moves nth steps ahead 
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        
+        //Note: add dummy head in front is really important
+        //if there is no dummy head, need to specially handel case: [1], n =1 
+        ListNode dummy(0);
+        dummy.next = head;
+        
+        ListNode *fast = &dummy;
+        //move n steps first
+        //Note: i <= n-1, eg. if n=1, fast needs to move once if i < n-1, then fast cannot move at all
+        for(int i = 0; i < n ; i++)
+        {
+            fast = fast->next;
+        }
+  
+        //now move two pointers together
+        ListNode *cur = &dummy;
+        while(fast->next != NULL)
+        {
+            fast = fast->next;
+            cur = cur->next;
+        }
+        
+        fast = cur->next;
+        //now cur->next is the nth node from the end
+        cur->next = cur->next->next;
+        delete(fast);
+        return dummy.next;
+    }
+};
