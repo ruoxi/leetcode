@@ -1,0 +1,41 @@
+//Reverse a singly linked list.
+//Hint:
+//A linked list can be reversed either iteratively or recursively. Could you implement both?
+
+//iterative
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ 
+ // 
+ //  a-->b-->c-->d-->NULL ------> d-->c-->b-->a--->NULL
+ //  prev   cur next
+ // dummy-->a-->b-->c-->d-->NULL  ------> dummy<--a<--b<--c<--d
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        if (head == NULL) return head;
+        ListNode* dummy = new ListNode(-1);
+        dummy->next = head;
+        
+        ListNode* prev= dummy;
+        ListNode* cur = prev->next;
+        ListNode* next;
+        while(cur != NULL)
+        {
+            next = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = next;
+        }
+        //now prev is the new head, dummy changed to NULL
+        head->next=NULL;
+        return prev;
+    }
+};
