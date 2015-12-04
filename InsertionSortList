@@ -1,0 +1,60 @@
+Sort a linked list using insertion sort.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ 
+ //insertion sort: 3, 1, 7, 8, 2,5
+ //start from 2nd element j = i =1;
+ //if A[j] < A[j-1] && j >0, swap A[j] and A[j-1], j--
+ // 1,3,7,8,2,5
+ //now j=0, break the loop, j=i=2;
+ //A[j] = A[2] = 7 > A[j-1] so continue....
+class Solution {
+public:
+    ListNode* insertionSortList(ListNode* head) {
+        if(head == NULL || head->next == NULL) return head;
+        
+        ListNode dummy(0);
+        dummy.next = head;
+        ListNode* ins = &dummy;
+        ListNode* prev = ins->next;
+        ListNode* cur = prev->next;
+        
+        while(cur != NULL)
+        {
+            if(cur->val >= prev->val)
+            {
+                prev = cur;
+                cur = prev->next;
+            }
+            else
+            {
+                //here compare with the first element of sorted list then move to the next
+                ListNode* start = ins;
+                while(start != cur)
+                {
+                    //ListNode* move = cur;
+                    if(start->next->val >= cur->val )
+                    {
+                        prev->next = cur->next;
+                        cur->next = start->next;
+                        start->next = cur;
+                        break;
+                    }
+                    start = start->next;
+                
+                    
+                }
+                cur = prev->next;
+            }
+        }
+        return dummy.next;
+        
+    }
+};
