@@ -1,0 +1,78 @@
+//Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+//reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+
+//You must do this in-place without altering the nodes' values.
+
+//For example,
+//Given {1,2,3,4}, reorder it to {1,4,2,3}.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+
+    ListNode* getMiddle(ListNode* head)
+    {
+        ListNode* fast = head;
+        ListNode* slow = head;
+        while(fast->next != NULL && fast->next->next != NULL)
+        {
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+        return slow;
+    }
+    
+    void reorderList(ListNode* head) {
+        //divide the linked list into two half through middle point
+        //reverse the second half, then merge two together
+        //eg a->b->c->d->e ==> a->b>c, d->e ==> a->b->c, e->d => a->e->b->d->c
+        if(head == NULL || head->next == NULL) return;
+        
+        ListNode* middle = getMiddle(head);
+        
+        ListNode* second = middle->next;
+        middle->next= NULL;
+        
+        //reverse the second half
+        ListNode dummySecond(0);
+        dummySecond.next = second;
+        ListNode* ins = &dummySecond;
+        ListNode* cur = ins->next;
+        while(cur->next != NULL)
+        {
+            ListNode* move = cur->next;
+            cur->next = move->next;
+            move->next = ins->next;
+            ins->next = move;
+        }
+        cur = ins->next;
+        //now merge two part
+
+
+        ListNode* tmp = head;
+        int i = 0;
+        ListNode* first = head->next;
+        while(first != NULL && cur != NULL)
+        {
+            tmp->next = cur;
+            tmp = tmp->next;
+            cur = cur->next;
+            
+            tmp->next = first;
+            tmp = tmp->next;
+            first = first->next;
+        }
+        if(first != NULL) tmp->next = first;
+        if(cur != NULL) tmp->next = cur;
+
+        
+    }
+};
+
