@@ -1,0 +1,61 @@
+//Given a list, rotate the list to the right by k places, where k is non-negative.
+
+//For example:
+//Given 1->2->3->4->5->NULL and k = 2,
+//return 4->5->1->2->3->NULL.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+
+    int getLength(ListNode* head)
+    {
+        int i = 0;
+        while(head!=NULL)
+        {
+            i++;
+            head = head->next;
+        }
+        return i;
+    }
+    ListNode* rotateRight(ListNode* head, int k) {
+        //first calculate valid k
+        //then rotate the linked list
+        if(head == NULL || head->next == NULL) return head;
+        
+        int l = getLength(head);
+        int m = k%l;
+        if(m == 0) return head;
+        
+        ListNode dummy(0);
+        dummy.next = head;
+        ListNode* cur = &dummy;
+        //first find the last k-1 th node
+        for(int i = 0; i < l-m; i++)
+        {
+            cur = cur->next;
+        }
+        ListNode* secondhalf = cur->next;
+        cur->next = NULL;
+        ListNode* tmp = dummy.next;
+        dummy.next = secondhalf;
+        
+        //then iterate through second half to find tail
+        while(secondhalf != NULL && secondhalf->next != NULL)
+        {
+            secondhalf = secondhalf->next;
+        }
+        
+        secondhalf->next = tmp;
+        
+        return dummy.next;
+        
+    }
+};
