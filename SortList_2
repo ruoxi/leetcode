@@ -1,0 +1,98 @@
+//Sort a linked list in O(n log n) time using constant space complexity.
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+ //merge sort: find the middle point of the input, then sort the left side and right side, finally merge them
+ //O(n)  = nlogn
+ //can also use quick sort: find a pivot, rearrange list so that all values < pivot comes to left side of pivot, and all values
+ //> pivot comes to right of it
+ // then continue recursively on left and right side of pivot
+ //base case is if there is no element or one element, return it.
+class Solution {
+public:
+
+    ListNode* findMiddle(ListNode* head)
+    {
+        ListNode* fast = head;
+        ListNode* slow = head;
+        
+        while(fast->next != NULL && fast->next->next != NULL)
+        {
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+        
+        return slow;
+    }
+    
+    ListNode* concat(ListNode* left, ListNode* middle, ListNode* right)
+    {
+        ListNode newhead(0);
+        ListNode* cur = &newhead;
+        cur->next = left;
+        while(cur != NULL && cur->next != NULL)
+        {
+            cur = cur->next;
+        }
+        
+        cur->next = middle;
+        while(cur != NULL && cur->next != NULL)
+        {
+            cur = cur->next;
+        }
+        
+        cur->next = right;
+        
+        return newhead.next;
+    }
+    ListNode* sortList(ListNode* head) {
+        if(head == NULL || head->next == NULL) return head;
+        
+        ListNode* middle = findMiddle(head); //O(n)
+        
+        //put all values less than middle to left and all values greater than middle to right
+        ListNode dummyleft(0);
+        ListNode *lefttail = &dummyleft;
+        ListNode dummyright(0);
+        ListNode *righttail = &dummyright;
+        ListNode dummymiddle(0);
+        ListNode *middletail = &dummymiddle;
+        
+        while(head != NULL)
+        {
+            if(head->val < middle->val)
+            {
+                lefttail->next = head;
+                lefttail = lefttail->next;
+            }
+            else if(head->val > middle->val)
+            {
+                righttail->next = head;
+                righttail = righttail->next;
+            }
+            else
+            {
+                middletail->next = head;
+                middletail = middletail->next;
+            }
+            head = head->next;
+        }
+        
+        lefttail->next = NULL;
+        middletail->next = NULL;
+        righttail->next = NULL;
+        
+        //then sort left, sort right
+        ListNode* left = sortList(dummyleft.next);
+        ListNode* right = sortList(dummyright.next);
+        //concat left, right and middle together
+        return concat(left, dummymiddle.next, right);
+        
+    }
+};
