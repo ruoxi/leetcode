@@ -1,0 +1,55 @@
+//Given a sorted integer array without duplicates, return the summary of its ranges.
+
+//For example, given [0,1,2,4,5,7], return ["0->2","4->5","7"].
+
+//Credits:
+//Special thanks to @jianchao.li.fighter for adding this problem and creating all test cases.
+
+//Subscribe to see which companies asked this question
+
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        int n = nums.size();
+        vector<string> res;
+        if(nums.size() == 0) return res;
+
+        bool has_range = false;
+        stringstream oss;
+        oss<< nums[0];
+        string range = oss.str();
+        oss.str("");
+        for(int i = 1; i< n; i++)
+        {
+            if(nums[i] == nums[i-1]+1)
+            {
+                has_range = true;
+            }
+            else
+            {
+                if(has_range)
+                {
+                    oss << nums[i-1];
+                    range += "->" + oss.str();
+                    has_range =false;
+                    oss.str("");
+                }
+                res.push_back(range);
+                oss << nums[i];
+                range = oss.str();
+                oss.str("");
+            }
+        }
+        
+        //add last one
+        if(has_range)
+        {
+             oss.str("");
+             oss << nums[n-1];
+             range += "->" + oss.str();
+        }
+        res.push_back(range);
+        return res;
+        
+    }
+};
