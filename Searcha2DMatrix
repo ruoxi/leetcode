@@ -53,6 +53,7 @@ public:
                             col_end = col_mid-1;
                         }
                     }
+                    return false;
                 }
   
                 row_start = mid+1;
